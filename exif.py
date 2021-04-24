@@ -15,7 +15,7 @@ cursor = connection.cursor()
 
 images = glob.glob("/Users/teshigawararyou/desktop/jpeg_pics/*.jpg")
 
-for path in images : # path = 読み込みたい画像ファイルのパス
+for path in images : 
 
   im: MpoImageFile = Image.open(path)
 
