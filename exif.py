@@ -27,7 +27,6 @@ for path in images : # path = 読み込みたい画像ファイルのパス
   dict = {"LensModel": "unknown", "Model": "unknown", "FocalLengthIn35mmFilm": "unknown", "FocalLength": "unknown", "DateTime": "1000-01-01 00:00:00.000000"}
   for tag_id, value in exif.items():
     tag = TAGS.get(tag_id, tag_id)
-    # print(f"{tag}:{value}")
 
     if tag == 'LensModel':    
       dict["LensModel"] =  value
