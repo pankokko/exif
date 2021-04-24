@@ -39,5 +39,4 @@ for path in images : # path = 読み込みたい画像ファイルのパス
 
     cursor.execute("INSERT INTO pictures_meta (lens_model, focal_length_in3_5mm_film, focal_length, date_time) values(%s, %s, %s, %s)" , (dict["LensModel"], dict["FocalLengthIn35mmFilm"], dict["FocalLength"], dict["DateTime"]))
     connection.commit()
-    print(dict)
 connection.close()
