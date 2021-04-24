@@ -3,6 +3,7 @@ from PIL.ExifTags import TAGS
 from PIL.MpoImagePlugin import MpoImageFile
 import glob
 import MySQLdb
+from datetime import datetime as dt
 
 connection = MySQLdb.connect(
   host='localhost',
@@ -21,17 +22,25 @@ for path in images : # path = 読み込みたい画像ファイルのパス
 
 
   exif = im.getexif()
-  # tag_idはExif情報のキー、valueはExif情報の値。
+  
   # tag_idはstr型ではないので、TAGS.getメソッドによってstr型に変換する
+  dict = {"LensModel": "unknown", "Model": "unknown", "FocalLengthIn35mmFilm": "unknown", "FocalLength": "unknown", "DateTime": "1000-01-01 00:00:00.000000"}
   for tag_id, value in exif.items():
-    # print(f"{tag_id}: {value}")
     tag = TAGS.get(tag_id, tag_id)
-    # Sigma 30mm F1.4は分析する必要はない。
-    if tag == 'FocalLength' and value[0] != 460 :
-      focal_length = value[0] * 0.1
-      print(f'実焦点距離：{focal_length}')
-      cursor.execute("INSERT INTO pictures_meta (focal_length) values(%s)" , (focal_length,))
-      connection.commit()
- 
-# 接続を閉じる
+    # print(f"{tag}:{value}")
+
+    if tag == 'LensModel':    
+      dict["LensModel"] =  value
+    if tag == 'Model':    
+      dict["Model"] =  value
+    if tag == 'FocalLengthIn35mmFilm':    
+      dict["FocalLengthIn35mmFilm"] =  value
+    if tag == 'FocalLength':
+      dict["FocalLength"] =   value[0] * 0.1
+    if tag == 'DateTime':
+      dict["DateTime"] =  dt.strptime(value, '%Y:%m:%d %H:%M:%S')
+
+    cursor.execute("INSERT INTO pictures_meta (lens_model, focal_length_in3_5mm_film, focal_length, date_time) values(%s, %s, %s, %s)" , (dict["LensModel"], dict["FocalLengthIn35mmFilm"], dict["FocalLength"], dict["DateTime"]))
+    connection.commit()
+    print(dict)
 connection.close()
